@@ -23,10 +23,31 @@
 
 ## 快速开始
 
+### 方式一：拉取镜像（推荐）
+
+镜像已发布到 GitHub Container Registry，无需本机构建。
+
 ```bash
+git clone https://github.com/zduyiwuer/puffdns.git
+cd puffdns
+
+# 删掉 docker-compose.yml 里的 build 段，取消 image 的注释：
+#   image: ghcr.io/zduyiwuer/puffdns:latest
+
+docker compose pull
+docker compose up -d
+```
+
+### 方式二：从源码构建
+
+```bash
+git clone https://github.com/zduyiwuer/puffdns.git
+cd puffdns
 cp .env.example .env      # 按需修改；不复制也能跑
 docker compose up -d --build
 ```
+
+### 首次登录
 
 首次启动会创建一个管理员账号。密码有两条路径：
 
@@ -34,7 +55,7 @@ docker compose up -d --build
 - 留空 → 自动生成随机密码，**打印在容器日志里，只出现一次**
 
 ```bash
-docker compose logs dns | grep -A3 "initial admin"
+docker compose logs dns | grep -A4 "initial admin"
 ```
 
 然后打开 `http://<服务器IP>:8080` 登录。
@@ -273,8 +294,11 @@ node src/index.js
 # 单元 + API 测试（61 项，不联网）
 node test/smoke.js
 
-# 真实 UDP/TCP/DoH 端到端测试（38 项，自动起停服务）
+# 真实 UDP/TCP/DoH 端到端测试（39 项，自动起停服务）
 node test/live.js
+
+# 复现 CI 冒烟测试的断言（无需 Docker）
+node test/ci-smoke-local.js
 ```
 
 `test/live.js` 会真的在 UDP 和 TCP 上发 DNS 报文、真的走一遍 HTTP 接口，并在最后重启进程验证数据持久化——用来确认改动没有破坏线缆上的字节。
