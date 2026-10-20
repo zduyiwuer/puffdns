@@ -1,0 +1,92 @@
+# puffdns — 部署配置
+#
+# 两种用法（二选一）：
+#
+#   A. 从源码构建（默认，适合先跑起来）
+#        docker compose up -d --build
+#
+#   B. 拉取已发布的镜像（适合长期部署与自动更新）
+#        删掉下面的 build 段，取消 image 的注释，然后：
+#        docker compose pull && docker compose up -d
+
+name: puffdns
+
+services:
+  dns:
+    # ── A. 本地构建 ──────────────────────────────────────────────
+    build:
+      context: .
+    image: puffdns:latest
+
+    # ── B. 拉取远端镜像（无需在本机构建，更新更快）───────────────
+    # image: ghcr.io/<你的用户名>/puffdns:latest
+
+    container_name: puffdns
+    restart: unless-stopped
+
+    # 绑定 53 端口需要该特权；仅靠 ports 映射并不能在容器内获得权限。
+    cap_add:
+      - NET_BIND_SERVICE
+
+    ports:
+      - "53:53/udp"
+      - "53:53/tcp"
+      - "8080:8080/tcp"
+
+    volumes:
+      # 全部状态（域名、记录、用户、DDNS 令牌、会话密钥）都在这里，升级不丢。
+      - ./data:/data
+
+    environment:
+      # ── DNS ────────────────────────────────────────────────────
+      DNS_PORT: "53"
+
+      # ── 面板与 DoH ─────────────────────────────────────────────
+      WEB_PORT: "8080"
+      # 只允许本机访问面板时改成 "127.0.0.1"。
+      # 面板不含 HTTPS，不要直接暴露到公网。
+      WEB_HOST: "0.0.0.0"
+      DOH_ENABLED: "true"
+
+      # ── 转发 ───────────────────────────────────────────────────
+      UPSTREAMS: "1.1.1.1,8.8.8.8,9.9.9.9"
+      UPSTREAM_TIMEOUT: "3000"
+      CACHE_ENABLED: "true"
+      CACHE_MAX_ENTRIES: "20000"
+      SERVE_STALE: "true"
+      # true = 纯转发，不回答本地域名；false = 优先答本地域名（推荐）
+      FORWARD_ONLY: "false"
+
+      # ── 行为 ───────────────────────────────────────────────────
+      DEFAULT_TTL: "300"
+      ADD_GLUE: "true"
+      QUERY_LOG: "true"
+      QUERY_LOG_SIZE: "1000"
+      LOG_LEVEL: "info"
+
+      # ── 初始管理员 ─────────────────────────────────────────────
+      # 仅在数据库为空、首次启动时生效。
+      # 留空则自动生成随机密码并打印到容器日志，只出现一次。
+      ADMIN_USER: "admin"
+      ADMIN_PASSWORD: ""
+
+      TZ: "Asia/Shanghai"
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    # ── 自动更新（可选，需配合 watchtower，见 README「自动更新」）───
+    # 启用后 watchtower 会定期检查镜像并滚动重建容器：
+    # labels:
+    #   - "com.centurylinklabs.watchtower.enable=true"
+    #   - "com.centurylinklabs.watchtower.rolling=true"
+
+    # ── 局域网独立 IP（可选，见 README「局域网直连」）────────────
+    # networks:
+    #   - puffnet
+    # networks:
+    #   puffnet:
+    #     external: true

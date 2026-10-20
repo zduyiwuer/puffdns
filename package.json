@@ -1,0 +1,19 @@
+{
+  "name": "puffdns",
+  "version": "1.0.0",
+  "description": "Self-hosted authoritative DNS + forwarding resolver with web management panel",
+  "type": "commonjs",
+  "main": "src/index.js",
+  "bin": {
+    "puffdns": "src/index.js"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "smoke": "node test/smoke.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT",
+  "dependencies": {}
+}

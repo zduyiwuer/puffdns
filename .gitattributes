@@ -1,0 +1,15 @@
+# Normalize line endings on checkin so the repository stores LF and a
+# Windows checkout does not turn shell scripts into CRLF (which breaks them
+# when the image runs under alpine's /bin/sh).
+* text=auto eol=lf
+
+# Files that must keep native line endings
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Binary assets
+*.png binary
+*.jpg binary
+*.ico binary
+*.woff2 binary
