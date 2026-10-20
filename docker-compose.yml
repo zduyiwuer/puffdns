@@ -19,7 +19,7 @@ services:
     image: puffdns:latest
 
     # ── B. 拉取远端镜像（无需在本机构建，更新更快）───────────────
-    # image: ghcr.io/<你的用户名>/puffdns:latest
+    # image: ghcr.io/zduyiwuer/puffdns:latest
 
     container_name: puffdns
     restart: unless-stopped

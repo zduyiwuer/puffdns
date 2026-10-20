@@ -2,8 +2,8 @@
 
 # puffdns
 
-[![CI](https://github.com/<owner>/puffdns/actions/workflows/ci.yml/badge.svg)](https://github.com/<owner>/puffdns/actions/workflows/ci.yml)
-[![image](https://ghcr.io/<owner>/puffdns/status?label=ghcr)](https://github.com/<owner>/puffdns/pkgs/container/puffdns)
+[![CI](https://github.com/zduyiwuer/puffdns/actions/workflows/ci.yml/badge.svg)](https://github.com/zduyiwuer/puffdns/actions/workflows/ci.yml)
+[![image](https://ghcr.io/zduyiwuer/puffdns/status?label=ghcr)](https://github.com/zduyiwuer/puffdns/pkgs/container/puffdns)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 自托管 DNS 服务器，带 Web 管理面板。**零第三方依赖**——只用 Node.js 内置模块实现，没有 npm install、没有构建步骤、镜像里没有 `node_modules`。

@@ -7,7 +7,7 @@
 ## 一、首次部署
 
 ```bash
-git clone https://github.com/<你的用户名>/puffdns.git
+git clone https://github.com/zduyiwuer/puffdns.git
 cd puffdns
 
 # 可选：改配置。不改也能直接跑
